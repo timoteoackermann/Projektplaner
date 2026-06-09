@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
-from datetime import datetime, timedelta
+from datetime import datetime
 
 # Seiteneinstellung für Breitbild (wichtig für Timelines!)
 st.set_page_config(layout="wide", page_title="Project Planner (Tom's Clone)", page_icon="📅")
@@ -54,17 +54,17 @@ if st.sidebar.button("🔄 Plan zurücksetzen"):
 # --- HAUPTBEREICH: TABELLE (Der Editor) ---
 st.write("### 📝 Aufgaben-Grid (Direkt editierbar)")
 
-# Konfiguration der Spalten (KORRIGIERT: Ohne fehlerhafte 'required' Parameter)
+# ULTRA-SICHERE KONFIGURATION (Entfernt 'placeholder' für 100% Python 3.14 Stabilität)
 column_config = {
     "Gruppe": st.column_config.SelectboxColumn("Ordner / Gruppe", options=["Konzept", "Entwicklung", "Design", "Marketing", "QA"]),
-    "Aufgabe": st.column_config.TextColumn("Aufgabenname", placeholder="Was ist zu tun?"),
+    "Aufgabe": st.column_config.TextColumn("Aufgabenname"),
     "Start": st.column_config.DateColumn("Startdatum", format="YYYY-MM-DD"),
     "Ende": st.column_config.DateColumn("Enddatum", format="YYYY-MM-DD"),
     "Status": st.column_config.SelectboxColumn("Status", options=["Geplant", "In Arbeit", "Fertig"]),
-    "Farbe": st.column_config.SelectboxColumn("Visualisierung (Farbe)", options=["#34d399", "#38bdf8", "#fbbf24", "#f87171", "#a78bfa"], help="Wähle die Blockfarbe für das Gantt-Chart")
+    "Farbe": st.column_config.SelectboxColumn("Visualisierung (Farbe)", options=["#34d399", "#38bdf8", "#fbbf24", "#f87171", "#a78bfa"])
 }
 
-# Der magische Data Editor von Streamlit (erlaubt Hinzufügen, Löschen, Bearbeiten)
+# Der Data Editor von Streamlit
 edited_df = st.data_editor(
     df, 
     column_config=column_config, 
@@ -88,30 +88,30 @@ if not edited_df.empty:
             x_end="Ende", 
             y="Aufgabe", 
             color="Farbe",
-            color_discrete_map="identity", # Nutzt die exakten Hex-Farben aus der Tabelle!
+            color_discrete_map="identity",
             hover_data=["Gruppe", "Status"]
         )
         
         # Design-Anpassungen für den Tom's Planner Vibe
-        fig.update_yaxes(autorange="reversed") # Chronologische Reihenfolge von oben nach unten
+        fig.update_yaxes(autorange="reversed")
         fig.update_layout(
             grid=dict(rows=1, columns=1),
             xaxis_title="Zeitverlauf",
             yaxis_title="",
             plot_bgcolor="white",
             paper_bgcolor="white",
-            height=400 + (len(edited_df) * 20), # Dynamische Höhe je nach Aufgabenanzahl
+            height=400 + (len(edited_df) * 20),
             showlegend=False,
             margin=dict(l=20, r=20, t=20, b=20)
         )
         
-        # Gridlines wie im echten Planer hinzufügen
+        # Gridlines hinzufügen
         fig.update_xaxes(
             showgrid=True, 
             gridcolor="#e2e8f0", 
             ticks="outside", 
             tickformat="%d. %b\n%Y",
-            dtick="D1" if (max(edited_df['Ende']) - min(edited_df['Start'])).days < 30 else "W1" # Schaltet bei langen Projekten auf Wochenansicht um
+            dtick="D1" if (max(edited_df['Ende']) - min(edited_df['Start'])).days < 30 else "W1"
         )
         fig.update_yaxes(showgrid=True, gridcolor="#e2e8f0")
         

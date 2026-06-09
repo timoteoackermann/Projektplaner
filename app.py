@@ -54,13 +54,13 @@ if st.sidebar.button("🔄 Plan zurücksetzen"):
 # --- HAUPTBEREICH: TABELLE (Der Editor) ---
 st.write("### 📝 Aufgaben-Grid (Direkt editierbar)")
 
-# Konfiguration der Spalten für den Tom's Planner Look
+# Konfiguration der Spalten (KORRIGIERT: Ohne fehlerhafte 'required' Parameter)
 column_config = {
-    "Gruppe": st.column_config.SelectboxColumn("Ordner / Gruppe", options=["Konzept", "Entwicklung", "Design", "Marketing", "QA"], required=True),
-    "Aufgabe": st.column_config.TextColumn("Aufgabenname", placeholder="Was ist zu tun?", required=True),
-    "Start": st.column_config.DateColumn("Startdatum", format="YYYY-MM-DD", required=True),
-    "Ende": st.column_config.DateColumn("Enddatum", format="YYYY-MM-DD", required=True),
-    "Status": st.column_config.SelectboxColumn("Status", options=["Geplant", "In Arbeit", "Fertig"], required=True),
+    "Gruppe": st.column_config.SelectboxColumn("Ordner / Gruppe", options=["Konzept", "Entwicklung", "Design", "Marketing", "QA"]),
+    "Aufgabe": st.column_config.TextColumn("Aufgabenname", placeholder="Was ist zu tun?"),
+    "Start": st.column_config.DateColumn("Startdatum", format="YYYY-MM-DD"),
+    "Ende": st.column_config.DateColumn("Enddatum", format="YYYY-MM-DD"),
+    "Status": st.column_config.SelectboxColumn("Status", options=["Geplant", "In Arbeit", "Fertig"]),
     "Farbe": st.column_config.SelectboxColumn("Visualisierung (Farbe)", options=["#34d399", "#38bdf8", "#fbbf24", "#f87171", "#a78bfa"], help="Wähle die Blockfarbe für das Gantt-Chart")
 }
 
@@ -93,7 +93,7 @@ if not edited_df.empty:
         )
         
         # Design-Anpassungen für den Tom's Planner Vibe
-        fig.update_yaxes(autorange="reversed") # Neueste Aufgaben unten bzw. chronologische Reihenfolge von oben nach unten
+        fig.update_yaxes(autorange="reversed") # Chronologische Reihenfolge von oben nach unten
         fig.update_layout(
             grid=dict(rows=1, columns=1),
             xaxis_title="Zeitverlauf",
